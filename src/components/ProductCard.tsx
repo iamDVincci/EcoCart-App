@@ -1,6 +1,7 @@
 import React from 'react';
 import { Product } from '@/types/index.d';
 import { Link } from 'react-router-dom';
+import StarRating from './StarRating.tsx';
 
 interface ProductCardProps {
   product: Product;
@@ -26,9 +27,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </Link>
         </h3>
         <p className="mt-1 text-sm text-gray-500">{product.description.substring(0, 60)}...</p>
+        
+        {/* Rating */}
+        <div className="mt-2">
+          <StarRating rating={product.rating} size="sm" />
+        </div>
+        
         <div className="mt-3 flex items-center justify-between">
           <p className="text-lg font-bold text-gray-900">${product.price.toFixed(2)}</p>
-          {/* Rating component would go here */}
+          <div className="flex items-center space-x-1 text-xs text-gray-500">
+            <span>{product.rating.toFixed(1)}</span>
+            <span>•</span>
+            <span>47 reviews</span>
+          </div>
         </div>
       </div>
     </div>

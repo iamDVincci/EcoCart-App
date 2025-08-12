@@ -6,7 +6,7 @@ interface ImpactCounterProps {
   unit: string;
 }
 
-const ImpactCounter: React.FC<ImpactCounterProps> = ({ value, label, unit }) => {
+const ImpactCounter: React.FC<ImpactCounterProps> = ({ value, label, unit }): JSX.Element => {
   // Basic counter, animation can be added later
   return (
     <div className="text-center">
