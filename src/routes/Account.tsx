@@ -172,18 +172,18 @@ const Orders: React.FC = () => {
               {order.items.map((item, index) => (
                 <div key={index} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
                   <img 
-                    src={item.images[0]} 
-                    alt={item.name} 
+                    src={item.product.images[0]} 
+                    alt={item.product.name} 
                     className="h-16 w-16 rounded-lg object-cover bg-gray-200" 
                   />
                   <div className="flex-1">
-                    <h5 className="font-medium text-gray-900">{item.name}</h5>
+                    <h5 className="font-medium text-gray-900">{item.product.name}</h5>
                     <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
-                    <StarRating rating={item.rating} size="sm" />
+                    <StarRating rating={item.product.rating} size="sm" />
                   </div>
                   <div className="text-right">
-                    <p className="font-medium text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
-                    <p className="text-sm text-gray-600">${item.price.toFixed(2)} each</p>
+                    <p className="font-medium text-gray-900">${(item.priceAtTime * item.quantity).toFixed(2)}</p>
+                    <p className="text-sm text-gray-600">${item.priceAtTime.toFixed(2)} each</p>
                   </div>
                 </div>
               ))}

@@ -1,4 +1,4 @@
-import { Product } from '@/types/index.d';
+import { Product, Category, Brand, Testimonial, User, Order, Achievement } from '@/types/index.d';
 
 export const mockProducts: Product[] = [
   {
@@ -10,6 +10,13 @@ export const mockProducts: Product[] = [
     carbonSavedKg: 0.5,
     rating: 4.8,
     images: ['/mock-images/toothbrush.jpg'],
+    category: 'Personal Care',
+    brand: 'EcoBrush',
+    certifications: ['Biodegradable', 'Plastic-Free'],
+    materials: ['Organic Bamboo', 'Plant-based bristles'],
+    packaging: 'Compostable cardboard',
+    availability: 'in-stock',
+    features: ['Ergonomic handle', 'Medium bristles', 'Compostable'],
   },
   {
     id: '2',
@@ -20,6 +27,13 @@ export const mockProducts: Product[] = [
     carbonSavedKg: 1.2,
     rating: 4.5,
     images: ['/mock-images/bottle.jpg'],
+    category: 'Lifestyle',
+    brand: 'GreenBottle Co',
+    certifications: ['100% Recycled', 'BPA-Free'],
+    materials: ['Recycled Glass', 'Food-grade silicone'],
+    packaging: 'Recyclable cardboard',
+    availability: 'in-stock',
+    features: ['Leak-proof', 'Dishwasher safe', '24oz capacity'],
   },
   {
     id: '3',
@@ -30,6 +44,13 @@ export const mockProducts: Product[] = [
     carbonSavedKg: 0.8,
     rating: 4.9,
     images: ['/mock-images/tote.jpg'],
+    category: 'Fashion',
+    brand: 'Pure Thread',
+    certifications: ['GOTS Certified', 'Fair Trade'],
+    materials: ['Organic Cotton'],
+    packaging: 'Minimal paper wrap',
+    availability: 'in-stock',
+    features: ['Machine washable', 'Reinforced handles', '15L capacity'],
   },
   {
     id: '4',
@@ -40,20 +61,223 @@ export const mockProducts: Product[] = [
     carbonSavedKg: 5.3,
     rating: 4.2,
     images: ['/mock-images/charger.jpg'],
+    category: 'Electronics',
+    brand: 'SolarTech',
+    certifications: ['Energy Star', 'RoHS Compliant'],
+    materials: ['Recycled Aluminum', 'Monocrystalline solar cells'],
+    packaging: 'Recyclable packaging',
+    availability: 'in-stock',
+    features: ['Waterproof', 'LED flashlight', 'Dual USB ports'],
+  },
+  {
+    id: '5',
+    name: 'Compostable Phone Case',
+    description: 'Protective phone case made from plant-based materials that fully compost in 180 days.',
+    price: 29.99,
+    sustainabilityScore: 94,
+    carbonSavedKg: 0.3,
+    rating: 4.6,
+    images: ['/mock-images/phone-case.jpg'],
+    category: 'Electronics',
+    brand: 'PlantCase',
+    certifications: ['Compostable', 'Plant-based'],
+    materials: ['PLA bioplastic', 'Flax straw'],
+    packaging: 'Compostable mailer',
+    availability: 'in-stock',
+    features: ['Drop protection', '100% compostable', 'Precise fit'],
+  },
+  {
+    id: '6',
+    name: 'Recycled Wool Sweater',
+    description: 'Cozy sweater made from 100% recycled wool fibers, giving new life to discarded textiles.',
+    price: 89.00,
+    sustainabilityScore: 91,
+    carbonSavedKg: 3.2,
+    rating: 4.7,
+    images: ['/mock-images/sweater.jpg'],
+    category: 'Fashion',
+    brand: 'ReThread',
+    certifications: ['Recycled Content', 'Carbon Neutral'],
+    materials: ['100% Recycled Wool'],
+    packaging: 'Reusable cotton bag',
+    availability: 'in-stock',
+    features: ['Machine washable', 'Unisex fit', 'Pill-resistant'],
+  },
+  {
+    id: '7',
+    name: 'Bamboo Kitchen Utensil Set',
+    description: 'Complete 6-piece kitchen utensil set made from sustainable bamboo.',
+    price: 22.50,
+    sustainabilityScore: 93,
+    carbonSavedKg: 0.7,
+    rating: 4.4,
+    images: ['/mock-images/utensils.jpg'],
+    category: 'Home',
+    brand: 'EcoKitchen',
+    certifications: ['FSC Certified', 'Food Safe'],
+    materials: ['Organic Bamboo'],
+    packaging: 'Recyclable kraft paper',
+    availability: 'in-stock',
+    features: ['Heat resistant', 'Non-scratch', '6 pieces included'],
+  },
+  {
+    id: '8',
+    name: 'Organic Skincare Gift Set',
+    description: 'Luxurious skincare set with cleanser, moisturizer, and serum made from organic ingredients.',
+    price: 65.00,
+    sustainabilityScore: 89,
+    carbonSavedKg: 1.1,
+    rating: 4.8,
+    images: ['/mock-images/skincare.jpg'],
+    category: 'Beauty',
+    brand: 'Pure Nature',
+    certifications: ['Organic', 'Cruelty-Free', 'Vegan'],
+    materials: ['Organic plant extracts', 'Essential oils'],
+    packaging: 'Glass containers with refill program',
+    availability: 'in-stock',
+    features: ['All skin types', 'Refillable', 'Travel-sized included'],
+  },
+];
+
+export const mockCategories: Category[] = [
+  {
+    id: 'fashion',
+    name: 'Fashion',
+    slug: 'fashion',
+    description: 'Sustainable clothing and accessories',
+    image: '/mock-images/category-fashion.jpg',
+    productCount: 156,
+    averageSustainabilityScore: 87,
+  },
+  {
+    id: 'home',
+    name: 'Home & Garden',
+    slug: 'home-garden',
+    description: 'Eco-friendly home essentials and garden supplies',
+    image: '/mock-images/category-home.jpg',
+    productCount: 234,
+    averageSustainabilityScore: 91,
+  },
+  {
+    id: 'beauty',
+    name: 'Beauty',
+    slug: 'beauty',
+    description: 'Natural and organic beauty products',
+    image: '/mock-images/category-beauty.jpg',
+    productCount: 89,
+    averageSustainabilityScore: 85,
+  },
+  {
+    id: 'electronics',
+    name: 'Electronics',
+    slug: 'electronics',
+    description: 'Energy-efficient and sustainable tech',
+    image: '/mock-images/category-electronics.jpg',
+    productCount: 67,
+    averageSustainabilityScore: 82,
+  },
+];
+
+export const mockBrands: Brand[] = [
+  {
+    id: 'ecobrush',
+    name: 'EcoBrush',
+    slug: 'ecobrush',
+    description: 'Leading manufacturer of bamboo oral care products',
+    logo: '/mock-images/brand-ecobrush.jpg',
+    sustainabilityScore: 95,
+    certifications: ['B-Corp', 'Carbon Neutral', 'Plastic-Free'],
+    story: 'Founded in 2018 with a mission to eliminate plastic from oral care routines.',
+    founded: '2018',
+    headquarters: 'Portland, OR',
+    website: 'https://ecobrush.com',
+  },
+  {
+    id: 'greenbottle',
+    name: 'GreenBottle Co',
+    slug: 'greenbottle-co',
+    description: 'Sustainable drinkware made from recycled materials',
+    logo: '/mock-images/brand-greenbottle.jpg',
+    sustainabilityScore: 88,
+    certifications: ['B-Corp', '1% for the Planet'],
+    story: 'Creating beautiful drinkware that gives new life to discarded glass.',
+    founded: '2016',
+    headquarters: 'San Francisco, CA',
+    website: 'https://greenbottle.co',
+  },
+  {
+    id: 'pure-thread',
+    name: 'Pure Thread',
+    slug: 'pure-thread',
+    description: 'Fair trade organic cotton clothing and accessories',
+    logo: '/mock-images/brand-purethread.jpg',
+    sustainabilityScore: 92,
+    certifications: ['GOTS', 'Fair Trade', 'Organic'],
+    story: 'Supporting organic farmers and fair labor practices since 2015.',
+    founded: '2015',
+    headquarters: 'Austin, TX',
+    website: 'https://purethread.com',
+  },
+];
+
+export const mockTestimonials: Testimonial[] = [
+  {
+    id: '1',
+    name: 'Sarah Chen',
+    avatar: '/mock-images/avatar-sarah.jpg',
+    location: 'Seattle, WA',
+    content: 'EcoCart has completely transformed how I shop. Knowing the environmental impact of each purchase helps me make better choices for the planet.',
+    rating: 5,
+    impactStats: {
+      co2Saved: 23.4,
+      ordersPlaced: 8,
+    },
+  },
+  {
+    id: '2',
+    name: 'Marcus Johnson',
+    avatar: '/mock-images/avatar-marcus.jpg',
+    location: 'Denver, CO',
+    content: 'The quality of sustainable products here is amazing. My bamboo toothbrush has lasted longer than any plastic one I\'ve used.',
+    rating: 5,
+    products: ['1'],
+    impactStats: {
+      co2Saved: 15.7,
+      ordersPlaced: 5,
+    },
+  },
+  {
+    id: '3',
+    name: 'Emma Rodriguez',
+    avatar: '/mock-images/avatar-emma.jpg',
+    location: 'Miami, FL',
+    content: 'Love the transparency! Being able to see exactly how much CO₂ I\'ve saved motivates me to keep choosing sustainable options.',
+    rating: 5,
+    impactStats: {
+      co2Saved: 31.2,
+      ordersPlaced: 12,
+    },
   },
 ];
 
 // Mock user data
-export const mockUser = {
+export const mockUser: User = {
   id: 'user-1',
   name: 'Alex Johnson',
   email: 'alex.johnson@email.com',
   joinDate: '2024-03-15',
   avatar: '/mock-images/avatar.jpg',
+  isAuthenticated: false, // Start as not authenticated
   preferences: {
     newsletter: true,
     sustainabilityUpdates: true,
     orderUpdates: true,
+    preferredCategories: ['fashion', 'home'],
+    sustainabilityGoals: {
+      monthlyCO2Target: 10,
+      annualCO2Target: 120,
+      preferredCertifications: ['Organic', 'Fair Trade', 'Carbon Neutral'],
+    },
   },
   sustainabilityStats: {
     totalCO2Saved: 45.7,
@@ -62,52 +286,148 @@ export const mockUser = {
     impactRank: 'Eco Champion',
     monthlyGoal: 10, // kg CO2
     currentMonthSaved: 7.2,
+    streak: 23,
+    achievements: [
+      {
+        id: 'first-order',
+        title: 'First Steps',
+        description: 'Made your first sustainable purchase',
+        icon: '🌱',
+        dateEarned: '2024-03-20',
+        category: 'milestone',
+      },
+      {
+        id: 'carbon-saver',
+        title: 'Carbon Saver',
+        description: 'Saved 25kg of CO₂ through sustainable choices',
+        icon: '🌍',
+        dateEarned: '2024-06-15',
+        category: 'environmental',
+      },
+      {
+        id: 'streak-week',
+        title: 'Weekly Warrior',
+        description: 'Made sustainable purchases for 7 days straight',
+        icon: '🔥',
+        dateEarned: '2024-07-01',
+        category: 'milestone',
+      },
+    ],
   }
 };
 
 // Mock orders data
-export const mockOrders = [
+export const mockOrders: Order[] = [
   {
     id: 'order-001',
+    userId: 'user-1',
     date: '2025-01-28',
     status: 'delivered',
     total: 67.47,
     carbonSaved: 8.5,
     items: [
-      { ...mockProducts[0], quantity: 2 },
-      { ...mockProducts[1], quantity: 1 },
-    ]
+      { product: mockProducts[0], quantity: 2, priceAtTime: 12.99 },
+      { product: mockProducts[1], quantity: 1, priceAtTime: 24.00 },
+    ],
+    shipping: {
+      address: {
+        street: '123 Eco Street',
+        city: 'Portland',
+        state: 'OR',
+        zip: '97201',
+        country: 'US',
+      },
+      method: 'carbon-neutral',
+      estimatedDelivery: '2025-01-30',
+      packaging: 'compostable',
+    },
+    billing: {
+      address: {
+        street: '123 Eco Street',
+        city: 'Portland',
+        state: 'OR',
+        zip: '97201',
+        country: 'US',
+      },
+      method: 'card',
+      carbonOffset: true,
+      donation: {
+        organization: 'Trees for the Future',
+        amount: 2.00,
+      },
+    },
+    tracking: 'ECO123456789',
   },
   {
     id: 'order-002', 
+    userId: 'user-1',
     date: '2025-01-15',
     status: 'delivered',
     total: 18.50,
     carbonSaved: 0.8,
     items: [
-      { ...mockProducts[2], quantity: 1 },
-    ]
+      { product: mockProducts[2], quantity: 1, priceAtTime: 18.50 },
+    ],
+    shipping: {
+      address: {
+        street: '123 Eco Street',
+        city: 'Portland',
+        state: 'OR',
+        zip: '97201',
+        country: 'US',
+      },
+      method: 'carbon-neutral',
+      estimatedDelivery: '2025-01-17',
+      packaging: 'recyclable',
+    },
+    billing: {
+      address: {
+        street: '123 Eco Street',
+        city: 'Portland',
+        state: 'OR',
+        zip: '97201',
+        country: 'US',
+      },
+      method: 'paypal',
+      carbonOffset: false,
+    },
   },
   {
     id: 'order-003',
+    userId: 'user-1',
     date: '2025-01-05',
     status: 'delivered', 
     total: 45.00,
     carbonSaved: 5.3,
     items: [
-      { ...mockProducts[3], quantity: 1 },
-    ]
+      { product: mockProducts[3], quantity: 1, priceAtTime: 45.00 },
+    ],
+    shipping: {
+      address: {
+        street: '123 Eco Street',
+        city: 'Portland',
+        state: 'OR',
+        zip: '97201',
+        country: 'US',
+      },
+      method: 'carbon-neutral',
+      estimatedDelivery: '2025-01-07',
+      packaging: 'minimal',
+    },
+    billing: {
+      address: {
+        street: '123 Eco Street',
+        city: 'Portland',
+        state: 'OR',
+        zip: '97201',
+        country: 'US',
+      },
+      method: 'apple-pay',
+      carbonOffset: true,
+      donation: {
+        organization: 'Ocean Cleanup',
+        amount: 1.50,
+      },
+    },
   },
-  {
-    id: 'order-004',
-    date: '2024-12-20',
-    status: 'delivered',
-    total: 89.97,
-    carbonSaved: 12.1,
-    items: [
-      { ...mockProducts[0], quantity: 1 },
-      { ...mockProducts[1], quantity: 2 },
-      { ...mockProducts[2], quantity: 1 },
-    ]
-  }
 ];
