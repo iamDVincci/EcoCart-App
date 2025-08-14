@@ -107,8 +107,28 @@ const Dashboard: React.FC = () => {
 const Orders: React.FC = () => {
   const orders = mockOrders;
   const [filter, setFilter] = useState('all');
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [showReorderModal, setShowReorderModal] = useState(false);
+  const [reorderItems, setReorderItems] = useState<any[]>([]);
 
   const filteredOrders = filter === 'all' ? orders : orders.filter(order => order.status === filter);
+
+  const handleViewDetails = (order: any) => {
+    setSelectedOrder(order);
+  };
+
+  const handleReorder = (order: any) => {
+    setReorderItems(order.items);
+    setShowReorderModal(true);
+  };
+
+  const confirmReorder = () => {
+    // Add items to cart logic would go here
+    console.log('Reordering items:', reorderItems);
+    setShowReorderModal(false);
+    setReorderItems([]);
+    // Show success message
+  };
 
   return (
     <div className="p-6">
@@ -191,16 +211,137 @@ const Orders: React.FC = () => {
 
             {/* Order Actions */}
             <div className="mt-4 flex justify-end space-x-3">
-              <button className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+              <button 
+                onClick={() => handleViewDetails(order)}
+                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
                 View Details
               </button>
-              <button className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+              <button 
+                onClick={() => handleReorder(order)}
+                className="px-4 py-2 bg-emerald-600 text-white rounded-md text-sm font-medium hover:bg-emerald-700"
+              >
                 Reorder Items
               </button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Order Details Modal */}
+      {selectedOrder && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-xl font-semibold text-gray-900">Order Details</h3>
+                <button
+                  onClick={() => setSelectedOrder(null)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Order Summary */}
+              <div className="border-b pb-4 mb-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-600">Order Number</p>
+                    <p className="font-medium">#{selectedOrder.id}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Order Date</p>
+                    <p className="font-medium">{new Date(selectedOrder.date).toLocaleDateString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Status</p>
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      selectedOrder.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                      selectedOrder.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                      'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {selectedOrder.status}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Total</p>
+                    <p className="font-medium">${selectedOrder.total.toFixed(2)}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Environmental Impact */}
+              <div className="bg-emerald-50 rounded-lg p-4 mb-4">
+                <h4 className="font-medium text-emerald-800 mb-2">Environmental Impact</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-emerald-700">CO₂ Saved: {selectedOrder.carbonSaved} kg</p>
+                  </div>
+                  <div>
+                    <p className="text-emerald-700">Trees Equivalent: {Math.round(selectedOrder.carbonSaved * 0.02)}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Order Items */}
+              <div>
+                <h4 className="font-medium text-gray-900 mb-3">Items</h4>
+                <div className="space-y-3">
+                  {selectedOrder.items.map((item: any, index: number) => (
+                    <div key={index} className="flex items-center space-x-4 p-3 border rounded-lg">
+                      <img 
+                        src={item.product.images[0]} 
+                        alt={item.product.name} 
+                        className="h-16 w-16 rounded-lg object-cover bg-gray-200" 
+                      />
+                      <div className="flex-1">
+                        <h5 className="font-medium text-gray-900">{item.product.name}</h5>
+                        <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
+                        <p className="text-sm text-gray-600">CO₂ Saved: {(item.product.carbonSavedKg * item.quantity).toFixed(1)} kg</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-medium text-gray-900">${(item.priceAtTime * item.quantity).toFixed(2)}</p>
+                        <p className="text-sm text-gray-600">${item.priceAtTime.toFixed(2)} each</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reorder Modal */}
+      {showReorderModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full">
+            <div className="p-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Reorder Items</h3>
+              <p className="text-gray-600 mb-4">
+                Add all {reorderItems.length} items from this order to your cart?
+              </p>
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={() => setShowReorderModal(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmReorder}
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-md text-sm font-medium hover:bg-emerald-700"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -329,6 +470,7 @@ const Sustainability: React.FC = () => {
 // Profile Settings Component
 const Profile: React.FC = () => {
   const [user, setUser] = useState(mockUser);
+  const [showSustainabilityGoals, setShowSustainabilityGoals] = useState(false);
 
   const handlePreferenceChange = (preference: keyof typeof mockUser.preferences) => {
     setUser(prev => ({
@@ -339,6 +481,29 @@ const Profile: React.FC = () => {
       }
     }));
   };
+
+  const handleGoalChange = (goal: string, value: number) => {
+    setUser(prev => ({
+      ...prev,
+      preferences: {
+        ...prev.preferences,
+        sustainabilityGoals: {
+          ...prev.preferences.sustainabilityGoals!,
+          [goal]: value
+        }
+      }
+    }));
+  };
+
+  const categories = [
+    'Personal Care', 'Home & Kitchen', 'Fashion', 'Electronics', 
+    'Health & Wellness', 'Food & Beverages', 'Sports & Outdoors'
+  ];
+
+  const certifications = [
+    'Fair Trade', 'Organic', 'B-Corp', 'Carbon Neutral', 
+    'Recyclable Packaging', 'Cruelty-Free', 'Energy Star'
+  ];
 
   return (
     <div className="p-6">
@@ -375,7 +540,7 @@ const Profile: React.FC = () => {
       </div>
 
       {/* Notification Preferences */}
-      <div className="bg-white border rounded-lg p-6">
+      <div className="bg-white border rounded-lg p-6 mb-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Notification Preferences</h3>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -434,6 +599,141 @@ const Profile: React.FC = () => {
               />
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* Sustainability Preferences */}
+      <div className="bg-white border rounded-lg p-6 mb-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Sustainability Preferences</h3>
+          <button
+            onClick={() => setShowSustainabilityGoals(!showSustainabilityGoals)}
+            className="text-emerald-600 hover:text-emerald-700 text-sm font-medium"
+          >
+            {showSustainabilityGoals ? 'Hide Goals' : 'Set Goals'}
+          </button>
+        </div>
+
+        {/* Preferred Categories */}
+        <div className="mb-6">
+          <h4 className="font-medium text-gray-900 mb-3">Preferred Categories</h4>
+          <div className="flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <button
+                key={category}
+                className={`px-3 py-1 rounded-full text-sm ${
+                  user.preferences.preferredCategories?.includes(category)
+                    ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                    : 'bg-gray-100 text-gray-700 border-gray-300'
+                } border`}
+                onClick={() => {
+                  const current = user.preferences.preferredCategories || [];
+                  const updated = current.includes(category)
+                    ? current.filter(c => c !== category)
+                    : [...current, category];
+                  setUser(prev => ({
+                    ...prev,
+                    preferences: {
+                      ...prev.preferences,
+                      preferredCategories: updated
+                    }
+                  }));
+                }}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Preferred Certifications */}
+        <div className="mb-6">
+          <h4 className="font-medium text-gray-900 mb-3">Preferred Certifications</h4>
+          <div className="flex flex-wrap gap-2">
+            {certifications.map((cert) => (
+              <button
+                key={cert}
+                className={`px-3 py-1 rounded-full text-sm ${
+                  user.preferences.sustainabilityGoals?.preferredCertifications?.includes(cert)
+                    ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                    : 'bg-gray-100 text-gray-700 border-gray-300'
+                } border`}
+                onClick={() => {
+                  const current = user.preferences.sustainabilityGoals?.preferredCertifications || [];
+                  const updated = current.includes(cert)
+                    ? current.filter(c => c !== cert)
+                    : [...current, cert];
+                  setUser(prev => ({
+                    ...prev,
+                    preferences: {
+                      ...prev.preferences,
+                      sustainabilityGoals: {
+                        ...prev.preferences.sustainabilityGoals!,
+                        preferredCertifications: updated
+                      }
+                    }
+                  }));
+                }}
+              >
+                {cert}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Sustainability Goals */}
+        {showSustainabilityGoals && (
+          <div className="space-y-4 p-4 bg-emerald-50 rounded-lg">
+            <h4 className="font-medium text-emerald-900">Your Sustainability Goals</h4>
+            
+            <div>
+              <label className="block text-sm font-medium text-emerald-800 mb-2">
+                Monthly CO₂ Savings Target (kg)
+              </label>
+              <input
+                type="number"
+                value={user.preferences.sustainabilityGoals?.monthlyCO2Target || 0}
+                onChange={(e) => handleGoalChange('monthlyCO2Target', Number(e.target.value))}
+                className="w-full rounded-md border border-emerald-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                min="0"
+                max="1000"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-emerald-800 mb-2">
+                Annual CO₂ Savings Target (kg)
+              </label>
+              <input
+                type="number"
+                value={user.preferences.sustainabilityGoals?.annualCO2Target || 0}
+                onChange={(e) => handleGoalChange('annualCO2Target', Number(e.target.value))}
+                className="w-full rounded-md border border-emerald-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                min="0"
+                max="10000"
+              />
+            </div>
+            
+            <p className="text-sm text-emerald-700">
+              Setting goals helps us recommend products that align with your sustainability targets.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Account Actions */}
+      <div className="bg-white border rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Actions</h3>
+        <div className="space-y-3">
+          <button className="w-full sm:w-auto px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 text-sm font-medium">
+            Save Changes
+          </button>
+          <button className="w-full sm:w-auto px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 text-sm font-medium ml-0 sm:ml-3">
+            Change Password
+          </button>
+          <button className="w-full sm:w-auto px-4 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 text-sm font-medium ml-0 sm:ml-3">
+            Delete Account
+          </button>
         </div>
       </div>
     </div>

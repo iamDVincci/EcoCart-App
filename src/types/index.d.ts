@@ -29,9 +29,11 @@ export interface ProductReview {
   id: string;
   userId: string;
   userName: string;
+  author: string; // alias for userName for backwards compatibility
   rating: number;
   title: string;
   content: string;
+  comment: string; // alias for content for backwards compatibility
   date: string;
   verified: boolean;
   helpful: number;
@@ -53,12 +55,40 @@ export interface User {
   joinDate: string;
   preferences: UserPreferences;
   sustainabilityStats: SustainabilityStats;
+  impactStats?: SustainabilityStats; // alias for sustainabilityStats
   isAuthenticated: boolean;
+}
+
+export interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+  error: string | null;
+}
+
+// Context types
+export interface UserContextType extends AuthState {
+  login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
+  logout: () => void;
+  updateProfile: (userData: Partial<User>) => Promise<void>;
+  clearError: () => void;
+}
+
+export interface CartContextType {
+  items: CartItem[];
+  total: number;
+  itemCount: number;
+  addToCart: (product: Product, quantity?: number) => Promise<void>;
+  removeFromCart: (productId: string) => void;
+  updateQuantity: (productId: string, quantity: number) => void;
+  clearCart: () => void;
 }
 
 export interface UserPreferences {
   newsletter: boolean;
   sustainabilityUpdates: boolean;
+  sustainabilityTips: boolean; // alias for sustainabilityUpdates
   orderUpdates: boolean;
   preferredCategories?: string[];
   sustainabilityGoals?: SustainabilityGoals;

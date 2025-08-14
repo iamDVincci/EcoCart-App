@@ -2,6 +2,7 @@ import React from 'react';
 import { Product } from '@/types/index.d';
 import { Link } from 'react-router-dom';
 import StarRating from './StarRating.tsx';
+import LazyImage from './LazyImage.tsx';
 
 interface ProductCardProps {
   product: Product;
@@ -17,7 +18,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {product.sustainabilityScore}
       </span>
       <div className="aspect-[4/3] w-full overflow-hidden">
-        <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
+        <LazyImage 
+          src={product.images[0]} 
+          alt={product.name} 
+          className="h-full w-full transition-transform duration-300 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        />
       </div>
       <div className="p-4">
         <h3 className="text-base font-semibold text-gray-800">

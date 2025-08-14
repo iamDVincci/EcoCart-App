@@ -1,13 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import type { User, AuthState } from '@/types/index.d.ts';
-
-interface UserContextType extends AuthState {
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name: string) => Promise<void>;
-  logout: () => void;
-  updateProfile: (data: Partial<User>) => Promise<void>;
-  updatePassword: (currentPassword: string, newPassword: string) => Promise<void>;
-}
+import type { User, AuthState, UserContextType } from '@/types/index.d.ts';
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
@@ -17,49 +9,57 @@ const mockUser: User = {
   email: 'john.doe@example.com',
   name: 'John Doe',
   avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
-  sustainabilityPreferences: {
-    preferredCategories: ['Personal Care', 'Home & Kitchen'],
-    carbonNeutralOnly: true,
-    localProductsOnly: false,
-    maxPriceRange: 100,
-    certificationPreferences: ['Fair Trade', 'Organic']
-  },
-  impactStats: {
-    totalCarbonSaved: 45.7,
-    totalTreesPlanted: 12,
-    totalPlasticReduced: 8.3,
-    totalWaterSaved: 234,
-    totalOrdersPlaced: 28,
-    memberSince: '2023-06-15'
-  },
-  addresses: [
-    {
-      id: '1',
-      label: 'Home',
-      name: 'John Doe',
-      street: '123 Eco Street',
-      city: 'Green Valley',
-      state: 'CA',
-      zipCode: '90210',
-      country: 'United States',
-      isDefault: true
-    }
-  ],
-  paymentMethods: [
-    {
-      id: '1',
-      type: 'credit',
-      last4: '4242',
-      brand: 'Visa',
-      expiryDate: '12/25',
-      isDefault: true
-    }
-  ],
+  joinDate: '2023-06-15',
+  isAuthenticated: true,
   preferences: {
     newsletter: true,
-    orderUpdates: true,
+    sustainabilityUpdates: true,
     sustainabilityTips: true,
-    personalizedRecommendations: true
+    orderUpdates: true,
+    preferredCategories: ['Personal Care', 'Home & Kitchen'],
+    sustainabilityGoals: {
+      monthlyCO2Target: 50,
+      annualCO2Target: 600,
+      preferredCertifications: ['Fair Trade', 'Organic']
+    }
+  },
+  sustainabilityStats: {
+    totalCO2Saved: 45.7,
+    totalOrders: 28,
+    favoriteCategory: 'Personal Care',
+    impactRank: 'Green Champion',
+    monthlyGoal: 50,
+    currentMonthSaved: 12.3,
+    streak: 14,
+    achievements: [
+      {
+        id: '1',
+        title: 'First Purchase',
+        description: 'Made your first sustainable purchase',
+        icon: '🌱',
+        dateEarned: '2023-06-15',
+        category: 'milestone'
+      }
+    ]
+  },
+  impactStats: {
+    totalCO2Saved: 45.7,
+    totalOrders: 28,
+    favoriteCategory: 'Personal Care',
+    impactRank: 'Green Champion',
+    monthlyGoal: 50,
+    currentMonthSaved: 12.3,
+    streak: 14,
+    achievements: [
+      {
+        id: '1',
+        title: 'First Purchase',
+        description: 'Made your first sustainable purchase',
+        icon: '🌱',
+        dateEarned: '2023-06-15',
+        category: 'milestone'
+      }
+    ]
   }
 };
 
@@ -149,7 +149,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
   };
 
-  const register = async (email: string, password: string, name: string): Promise<void> => {
+  const register = async (name: string, email: string, password: string): Promise<void> => {
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
 
@@ -163,14 +163,21 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         id: Date.now().toString(),
         email,
         name,
+        sustainabilityStats: {
+          ...mockUser.sustainabilityStats,
+          totalCO2Saved: 0,
+          totalOrders: 0,
+          currentMonthSaved: 0,
+          streak: 0,
+          achievements: []
+        },
         impactStats: {
-          ...mockUser.impactStats,
-          totalCarbonSaved: 0,
-          totalTreesPlanted: 0,
-          totalPlasticReduced: 0,
-          totalWaterSaved: 0,
-          totalOrdersPlaced: 0,
-          memberSince: new Date().toISOString().split('T')[0]
+          ...mockUser.sustainabilityStats,
+          totalCO2Saved: 0,
+          totalOrders: 0,
+          currentMonthSaved: 0,
+          streak: 0,
+          achievements: []
         }
       };
 
@@ -231,13 +238,17 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
   };
 
+  const clearError = (): void => {
+    dispatch({ type: 'SET_ERROR', payload: null });
+  };
+
   const value: UserContextType = {
     ...state,
     login,
     register,
     logout,
     updateProfile,
-    updatePassword
+    clearError
   };
 
   return (

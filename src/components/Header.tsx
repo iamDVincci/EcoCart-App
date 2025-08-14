@@ -91,15 +91,16 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 h-16 border-b bg-white/95 backdrop-blur-sm">
+        <header className="sticky top-0 z-50 border-b bg-white shadow-sm" role="banner">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4">
         {/* Logo */}
         <Link 
           to="/" 
-          className="flex items-center space-x-2 font-semibold text-emerald-600" 
+          className="flex items-center space-x-2 font-semibold text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 rounded-md" 
           onClick={closeMobileMenu}
+          aria-label="EcoCart Home"
         >
-          <svg className="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
+          <svg className="h-8 w-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 2L2 7v10c0 5.55 3.84 10 9 11 1.32-.21 2.58-.64 3.75-1.25C19.8 26.1 22 21.4 22 17V7l-10-5zM12 4.3L20 8.5v8.5c0 3.4-1.8 6.9-4.5 8.9C14.2 24.6 13.1 24 12 24s-2.2.6-3.5 1.9C5.8 23.4 4 19.9 4 16.5V8.5l8-4.2z"/>
             <path d="M8 12l2 2 6-6"/>
           </svg>
@@ -107,22 +108,22 @@ const Header: React.FC = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden gap-8 md:flex">
+        <nav className="hidden gap-8 md:flex" role="navigation" aria-label="Main navigation">
           <Link 
             to="/products" 
-            className="text-sm font-medium text-gray-700 transition-colors hover:text-emerald-600"
+            className="text-sm font-medium text-gray-700 transition-colors hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 rounded-md px-2 py-1"
           >
             Products
           </Link>
           <Link 
             to="/impact" 
-            className="text-sm font-medium text-gray-700 transition-colors hover:text-emerald-600"
+            className="text-sm font-medium text-gray-700 transition-colors hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 rounded-md px-2 py-1"
           >
             Impact
           </Link>
           <Link 
             to="/about" 
-            className="text-sm font-medium text-gray-700 transition-colors hover:text-emerald-600"
+            className="text-sm font-medium text-gray-700 transition-colors hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 rounded-md px-2 py-1"
           >
             About
           </Link>

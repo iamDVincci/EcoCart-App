@@ -232,11 +232,12 @@ const Cart: React.FC = () => {
                 </div>
               </div>
 
-              <button 
-                className="mt-6 w-full rounded-md bg-emerald-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+              <Link
+                to="/checkout"
+                className="mt-6 w-full rounded-md bg-emerald-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 text-center block"
               >
                 Proceed to Checkout
-              </button>
+              </Link>
               
               <p className="mt-3 text-center text-xs text-gray-500">
                 Secure checkout with 256-bit SSL encryption
