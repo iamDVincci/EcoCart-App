@@ -30,6 +30,11 @@ const Home: React.FC = () => {
               Discover eco‑friendly products that make a difference. Track your positive impact 
               in real time while supporting brands committed to environmental responsibility.
             </p>
+            <div className="mt-8 flex items-center justify-center">
+                <div className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-medium text-emerald-800">
+                    🌱 Carbon Neutral Shipping on All Orders
+                </div>
+            </div>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
               <Link 
                 to="/products" 

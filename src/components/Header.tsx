@@ -4,6 +4,7 @@ import { useCart } from '@/contexts/CartContext.tsx';
 import { useProducts } from '@/contexts/ProductsContext.tsx';
 import { useUser } from '@/contexts/UserContext.tsx';
 import { Product } from '@/types/index.d';
+import { Search, ShoppingCart, ShieldCheck } from 'lucide-react';
 
 interface SearchResult {
   id: string;
@@ -23,8 +24,10 @@ const Header: React.FC = () => {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -65,6 +68,7 @@ const Header: React.FC = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setShowSearchResults(false);
+        setIsSearchExpanded(false);
       }
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setShowUserMenu(false);
@@ -81,6 +85,7 @@ const Header: React.FC = () => {
       navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
       setShowSearchResults(false);
       setSearchQuery('');
+      setIsSearchExpanded(false);
     }
   };
 
@@ -88,69 +93,67 @@ const Header: React.FC = () => {
     navigate(`/products/${productId}`);
     setShowSearchResults(false);
     setSearchQuery('');
+    setIsSearchExpanded(false);
   };
 
-  return (
-        <header className="sticky top-0 z-50 border-b bg-white shadow-sm" role="banner">
-      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4">
-        {/* Logo */}
-        <Link 
-          to="/" 
-          className="flex items-center space-x-2 font-semibold text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 rounded-md" 
-          onClick={closeMobileMenu}
-          aria-label="EcoCart Home"
-        >
-          <svg className="h-8 w-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 2L2 7v10c0 5.55 3.84 10 9 11 1.32-.21 2.58-.64 3.75-1.25C19.8 26.1 22 21.4 22 17V7l-10-5zM12 4.3L20 8.5v8.5c0 3.4-1.8 6.9-4.5 8.9C14.2 24.6 13.1 24 12 24s-2.2.6-3.5 1.9C5.8 23.4 4 19.9 4 16.5V8.5l8-4.2z"/>
-            <path d="M8 12l2 2 6-6"/>
-          </svg>
-          <span className="text-xl">EcoCart</span>
-        </Link>
+  useEffect(() => {
+    if (isSearchExpanded && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchExpanded]);
 
-        {/* Desktop Navigation */}
-        <nav className="hidden gap-8 md:flex" role="navigation" aria-label="Main navigation">
+  return (
+    <header className="sticky top-0 z-50 border-b bg-white shadow-sm">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-8">
+          {/* Logo */}
           <Link 
-            to="/products" 
-            className="text-sm font-medium text-gray-700 transition-colors hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 rounded-md px-2 py-1"
+            to="/" 
+            className="flex flex-shrink-0 items-center gap-2"
+            onClick={closeMobileMenu}
+            aria-label="EcoCart Home"
           >
-            Products
+            <ShieldCheck className="h-8 w-8 text-emerald-600" />
+            <span className="text-xl font-semibold text-gray-800">EcoCart</span>
           </Link>
-          <Link 
-            to="/impact" 
-            className="text-sm font-medium text-gray-700 transition-colors hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 rounded-md px-2 py-1"
-          >
-            Impact
-          </Link>
-          <Link 
-            to="/about" 
-            className="text-sm font-medium text-gray-700 transition-colors hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 rounded-md px-2 py-1"
-          >
-            About
-          </Link>
-        </nav>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+            <Link to="/products" className="text-gray-600 hover:text-emerald-600 transition-colors">Products</Link>
+            <Link to="/impact" className="text-gray-600 hover:text-emerald-600 transition-colors">Impact</Link>
+            <Link to="/about" className="text-gray-600 hover:text-emerald-600 transition-colors">About</Link>
+          </nav>
+        </div>
 
         {/* Desktop Search & Actions */}
-        <div className="hidden items-center gap-4 md:flex">
-          {/* Enhanced Search */}
-          <div className="relative" ref={searchRef}>
+        <div className="hidden md:flex items-center justify-end gap-4">
+          {/* Search */}
+          <div className="relative flex items-center" ref={searchRef}>
             <form onSubmit={handleSearchSubmit} className="relative">
               <input
+                ref={searchInputRef}
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search sustainable products..."
-                className="w-80 rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                onFocus={() => setIsSearchExpanded(true)}
+                onBlur={() => {
+                  if (!searchQuery) setIsSearchExpanded(false);
+                }}
+                placeholder="Search..."
+                className={`h-10 rounded-full border bg-gray-50 pl-4 pr-10 text-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 ${isSearchExpanded ? 'w-64' : 'w-0 opacity-0'}`}
               />
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
+              <button
+                type={isSearchExpanded && searchQuery ? 'submit' : 'button'}
+                onClick={() => setIsSearchExpanded(!isSearchExpanded)}
+                className={`absolute inset-y-0 right-0 flex items-center justify-center w-10 h-10 text-gray-500 hover:text-emerald-600 transition-transform duration-300 ${isSearchExpanded ? 'transform -translate-x-0' : 'transform -translate-x-0'}`}
+                aria-label={isSearchExpanded ? "Submit search" : "Open search bar"}
+              >
+                <Search className="h-5 w-5" />
+              </button>
             </form>
 
-            {/* Search Results Dropdown */}
-            {showSearchResults && searchResults.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-1 rounded-lg border border-gray-200 bg-white py-2 shadow-lg">
+            {isSearchExpanded && showSearchResults && searchResults.length > 0 && (
+              <div className="absolute top-full right-0 mt-2 w-80 rounded-lg border border-gray-200 bg-white py-2 shadow-lg">
                 {searchResults.map((result) => (
                   <button
                     key={result.id}
@@ -182,21 +185,14 @@ const Header: React.FC = () => {
               </div>
             )}
           </div>
-
-          {/* Carbon Neutral Badge */}
-          <div className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">
-            Carbon Neutral Shipping
-          </div>
           
           {/* Cart */}
           <Link 
             to="/cart" 
             aria-label="Shopping Cart" 
-            className="relative text-gray-700 transition-colors hover:text-emerald-600"
+            className="relative text-gray-500 hover:text-emerald-600 transition-colors"
           >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
+            <ShoppingCart className="h-6 w-6" />
             {itemCount > 0 && (
               <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-xs font-medium text-white">
                 {itemCount}
@@ -225,9 +221,6 @@ const Header: React.FC = () => {
                     </span>
                   </div>
                 )}
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
               </button>
 
               {showUserMenu && (
@@ -237,27 +230,9 @@ const Header: React.FC = () => {
                       <p className="font-medium">{user?.name}</p>
                       <p className="text-gray-500">{user?.email}</p>
                     </div>
-                    <Link
-                      to="/account"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      onClick={() => setShowUserMenu(false)}
-                    >
-                      My Account
-                    </Link>
-                    <Link
-                      to="/account/orders"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      onClick={() => setShowUserMenu(false)}
-                    >
-                      Order History
-                    </Link>
-                    <Link
-                      to="/account/sustainability"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      onClick={() => setShowUserMenu(false)}
-                    >
-                      My Impact
-                    </Link>
+                    <Link to="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onClick={() => setShowUserMenu(false)}>My Account</Link>
+                    <Link to="/account/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onClick={() => setShowUserMenu(false)}>Order History</Link>
+                    <Link to="/account/sustainability" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onClick={() => setShowUserMenu(false)}>My Impact</Link>
                     <button
                       onClick={() => {
                         logout();
@@ -273,16 +248,16 @@ const Header: React.FC = () => {
               )}
             </div>
           ) : (
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-2">
               <Link 
                 to="/login" 
-                className="text-gray-700 transition-colors hover:text-emerald-600"
+                className="whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
               >
                 Sign In
               </Link>
               <Link 
                 to="/register" 
-                className="bg-emerald-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-emerald-700 transition-colors"
+                className="whitespace-nowrap rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-colors"
               >
                 Sign Up
               </Link>
@@ -297,9 +272,7 @@ const Header: React.FC = () => {
             aria-label="Shopping Cart" 
             className="relative text-gray-700"
           >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
+            <ShoppingCart className="h-6 w-6" />
             {itemCount > 0 && (
               <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-xs font-medium text-white">
                 {itemCount}
@@ -332,7 +305,7 @@ const Header: React.FC = () => {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="absolute left-0 right-0 top-16 border-b bg-white shadow-lg md:hidden">
-          <div className="mx-auto max-w-7xl px-4 py-4">
+          <div className="px-4 py-4">
             {/* Mobile Search */}
             <form onSubmit={handleSearchSubmit} className="mb-4">
               <div className="relative">
@@ -344,75 +317,38 @@ const Header: React.FC = () => {
                   className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 />
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                  <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
+                  <Search className="h-4 w-4 text-gray-400" />
                 </div>
               </div>
             </form>
 
             {/* Mobile Navigation Links */}
-            <nav className="space-y-4">
-              <Link 
-                to="/products" 
-                className="flex items-center py-2 text-base font-medium text-gray-700 hover:text-emerald-600"
-                onClick={closeMobileMenu}
-              >
-                <svg className="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-                Products
-              </Link>
-              
-              <Link 
-                to="/impact" 
-                className="flex items-center py-2 text-base font-medium text-gray-700 hover:text-emerald-600"
-                onClick={closeMobileMenu}
-              >
-                <svg className="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                Impact
-              </Link>
-              
-              <Link 
-                to="/about" 
-                className="flex items-center py-2 text-base font-medium text-gray-700 hover:text-emerald-600"
-                onClick={closeMobileMenu}
-              >
-                <svg className="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                About
-              </Link>
-              
-              <Link 
-                to="/account" 
-                className="flex items-center py-2 text-base font-medium text-gray-700 hover:text-emerald-600"
-                onClick={closeMobileMenu}
-              >
-                <svg className="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                Account
-              </Link>
+            <nav className="space-y-2">
+              <Link to="/products" className="flex items-center py-2 text-base font-medium text-gray-700 hover:text-emerald-600" onClick={closeMobileMenu}>Products</Link>
+              <Link to="/impact" className="flex items-center py-2 text-base font-medium text-gray-700 hover:text-emerald-600" onClick={closeMobileMenu}>Impact</Link>
+              <Link to="/about" className="flex items-center py-2 text-base font-medium text-gray-700 hover:text-emerald-600" onClick={closeMobileMenu}>About</Link>
+              <Link to="/account" className="flex items-center py-2 text-base font-medium text-gray-700 hover:text-emerald-600" onClick={closeMobileMenu}>Account</Link>
             </nav>
 
             {/* Mobile Action Buttons */}
-            <div className="mt-6 space-y-3 border-t pt-4">
-              <div className="rounded-lg bg-emerald-50 p-3 text-center">
-                <span className="text-sm font-medium text-emerald-800">
-                  🌱 Carbon Neutral Shipping on All Orders
-                </span>
+            {!isAuthenticated && (
+              <div className="mt-6 space-y-3 border-t pt-4">
+                <Link 
+                  to="/login" 
+                  className="flex w-full items-center justify-center rounded-lg bg-gray-100 px-4 py-3 text-base font-medium text-gray-800 hover:bg-gray-200"
+                  onClick={closeMobileMenu}
+                >
+                  Sign In
+                </Link>
+                <Link 
+                  to="/register" 
+                  className="flex w-full items-center justify-center rounded-lg bg-emerald-600 px-4 py-3 text-base font-medium text-white hover:bg-emerald-700"
+                  onClick={closeMobileMenu}
+                >
+                  Sign Up
+                </Link>
               </div>
-              <Link 
-                to="/cart" 
-                className="flex w-full items-center justify-center rounded-lg bg-emerald-600 px-4 py-3 text-base font-medium text-white hover:bg-emerald-700"
-                onClick={closeMobileMenu}
-              >
-                View Cart {itemCount > 0 && `(${itemCount})`}
-              </Link>
-            </div>
+            )}
           </div>
         </div>
       )}

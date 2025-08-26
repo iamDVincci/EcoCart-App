@@ -57,6 +57,7 @@ export interface User {
   sustainabilityStats: SustainabilityStats;
   impactStats?: SustainabilityStats; // alias for sustainabilityStats
   isAuthenticated: boolean;
+  addresses?: Address[];
 }
 
 export interface AuthState {

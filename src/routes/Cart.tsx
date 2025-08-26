@@ -4,18 +4,18 @@ import { useCart } from '@/contexts/CartContext.tsx';
 
 const Cart: React.FC = () => {
   const { 
-    cartItems, 
+    items, 
     removeFromCart, 
     updateQuantity, 
     clearCart, 
     itemCount, 
-    totalPrice, 
+    total, 
     totalCarbonSaved 
   } = useCart();
 
-  const shipping = totalPrice > 50 ? 0 : 5.99;
-  const tax = totalPrice * 0.08; // 8% tax
-  const finalTotal = totalPrice + shipping + tax;
+  const shipping = total > 50 ? 0 : 5.99;
+  const tax = total * 0.08; // 8% tax
+  const finalTotal = total + shipping + tax;
 
   const handleQuantityChange = (productId: string, newQuantity: number) => {
     updateQuantity(productId, newQuantity);
@@ -60,15 +60,15 @@ const Cart: React.FC = () => {
         {/* Cart Items */}
         <div className="lg:col-span-8">
           <div className="space-y-6">
-            {cartItems.map((item) => (
-              <div key={item.id} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            {items.map((item) => (
+              <div key={item.product.id} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                 <div className="grid gap-4 sm:grid-cols-12 sm:items-center">
                   {/* Product Image */}
                   <div className="sm:col-span-3">
-                    <Link to={`/products/${item.id}`}>
+                    <Link to={`/products/${item.product.id}`}>
                       <img 
-                        src={item.images[0]} 
-                        alt={item.name} 
+                        src={item.product.images[0]} 
+                        alt={item.product.name} 
                         className="aspect-square w-full rounded-lg object-cover hover:opacity-75"
                       />
                     </Link>
@@ -77,18 +77,18 @@ const Cart: React.FC = () => {
                   {/* Product Details */}
                   <div className="sm:col-span-6">
                     <h3 className="text-lg font-medium text-gray-900">
-                      <Link to={`/products/${item.id}`} className="hover:text-emerald-600">
-                        {item.name}
+                      <Link to={`/products/${item.product.id}`} className="hover:text-emerald-600">
+                        {item.product.name}
                       </Link>
                     </h3>
-                    <p className="mt-1 text-sm text-gray-600">{item.description.substring(0, 100)}...</p>
+                    <p className="mt-1 text-sm text-gray-600">{item.product.description.substring(0, 100)}...</p>
                     
                     <div className="mt-3 flex flex-wrap gap-2">
                       <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                        {item.carbonSavedKg} kg CO₂ saved
+                        {item.product.carbonSavedKg} kg CO₂ saved
                       </span>
                       <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800">
-                        Score: {item.sustainabilityScore}
+                        Score: {item.product.sustainabilityScore}
                       </span>
                     </div>
                   </div>
@@ -97,13 +97,13 @@ const Cart: React.FC = () => {
                   <div className="sm:col-span-3">
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <label htmlFor={`quantity-${item.id}`} className="text-sm font-medium text-gray-700">
+                        <label htmlFor={`quantity-${item.product.id}`} className="text-sm font-medium text-gray-700">
                           Qty:
                         </label>
                         <select
-                          id={`quantity-${item.id}`}
+                          id={`quantity-${item.product.id}`}
                           value={item.quantity}
-                          onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
+                          onChange={(e) => handleQuantityChange(item.product.id, Number(e.target.value))}
                           className="rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                         >
                           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
@@ -114,15 +114,15 @@ const Cart: React.FC = () => {
 
                       <div className="text-right">
                         <p className="text-lg font-medium text-gray-900">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          ${(item.product.price * item.quantity).toFixed(2)}
                         </p>
                         <p className="text-sm text-gray-500">
-                          ${item.price.toFixed(2)} each
+                          ${item.product.price.toFixed(2)} each
                         </p>
                       </div>
 
                       <button
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => removeFromCart(item.product.id)}
                         className="text-sm font-medium text-red-600 hover:text-red-500"
                       >
                         Remove

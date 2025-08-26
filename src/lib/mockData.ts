@@ -271,6 +271,7 @@ export const mockUser: User = {
   preferences: {
     newsletter: true,
     sustainabilityUpdates: true,
+    sustainabilityTips: true, // alias for sustainabilityUpdates
     orderUpdates: true,
     preferredCategories: ['fashion', 'home'],
     sustainabilityGoals: {
